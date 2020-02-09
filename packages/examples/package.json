@@ -1,6 +1,6 @@
 {
   "name": "@neow/examples",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "> TODO: description",
   "author": "eavichay <eavichay@gmail.com>",
   "homepage": "https://github.com/neo-web/neow/tree/master/packages/examples#readme",
@@ -9,12 +9,11 @@
     "type": "git",
     "url": "git+https://github.com/neo-web/neow.git"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "bugs": {
     "url": "https://github.com/neo-web/neow/issues"
   },
   "dependencies": {
-    "@neow/core": "*"
+    "@neow/core": "^0.0.1"
   }
 }
