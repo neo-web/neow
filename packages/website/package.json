@@ -1,18 +1,10 @@
 {
   "name": "@neow/website",
   "version": "0.0.1",
-  "description": "> TODO: description",
+  "description": "modern, fast, and robust front-end microframework",
   "author": "eavichay <eavichay@gmail.com>",
   "homepage": "https://github.com/neo-web/neow/tree/master/packages/website#readme",
   "license": "GPL-3.0",
-  "main": "lib/website.js",
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
-  },
-  "files": [
-    "lib"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neo-web/neow.git"
@@ -22,5 +14,6 @@
   },
   "bugs": {
     "url": "https://github.com/neo-web/neow/issues"
-  }
+  },
+  "gitHead": "fffca652a1f0e5d72c32b4ca918da1a81b3030ba"
 }

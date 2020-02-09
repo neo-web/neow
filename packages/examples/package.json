@@ -15,5 +15,6 @@
   },
   "dependencies": {
     "@neow/core": "^0.0.1"
-  }
+  },
+  "gitHead": "fffca652a1f0e5d72c32b4ca918da1a81b3030ba"
 }
