@@ -1,11 +1,12 @@
 {
-  "name": "@neow/website",
-  "version": "0.0.0",
-  "description": "> TODO: description",
+  "name": "@neow/core",
+  "version": "1.0.0",
+  "description": "Core libraries for neow",
   "author": "eavichay <eavichay@gmail.com>",
-  "homepage": "https://github.com/neo-web/neow/tree/master/packages/website#readme",
+  "homepage": "https://github.com/neo-web/neow#readme",
   "license": "GPL-3.0",
-  "main": "lib/website.js",
+  "main": "dist/index.js",
+  "module": "./dist/index.js",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -13,12 +14,16 @@
   "files": [
     "lib"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neo-web/neow.git"
   },
   "scripts": {
-    "build": "exit 0"
+    "build": "rollup -c",
+    "dev": "NODE_ENV=development rollup -c --watch"
   },
   "bugs": {
     "url": "https://github.com/neo-web/neow/issues"

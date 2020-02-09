@@ -1,0 +1,28 @@
+{
+  "name": "neo-web",
+  "version": "1.0.0",
+  "description": "Modern web standards based UI authoring tools and libraries",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "eavichay@gmail.com",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "lerna": "^3.20.2",
+    "rollup": "^1.31.0",
+    "rollup-plugin-sourcemaps": "^0.5.0",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.25.3",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neo-web/neow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/neo-web/neow/issues"
+  },
+  "homepage": "https://github.com/neo-web/neow#readme"
+}
