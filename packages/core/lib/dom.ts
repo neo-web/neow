@@ -77,7 +77,9 @@ export const scanDOMTree = (root: Node, element: HTMLElement, localDirectives: D
                         });
                     }
                 }
-                attr.nodeValue = '';
+                if (!attr.nodeName.startsWith('on')) {
+                    attr.nodeValue = '';
+                }
             });
             continue;
         } else if (!(currentNode.nodeValue || '').includes('{{')) {
@@ -103,6 +105,9 @@ export const scanDOMTree = (root: Node, element: HTMLElement, localDirectives: D
                 }, oText);
             paths.forEach(path => {
                 addPath(path, () => node.data = modify(), binders);
+                requestAnimationFrame(() => {
+                    node.data = modify();
+                });
             });
         }
     }

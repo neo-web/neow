@@ -4,11 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>neow. modern, fast, robust</title>
+    <title>neow. modern, fast, and light framework to fall inlove with</title>
+    <link rel="stylesheet" href="./github-gist.css">
+    <script src="./highlight.pack.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Libre+Caslon+Display|Montserrat:100&display=swap"
+        rel="stylesheet">
     <style>
         * {
             --bg-color: #2365c0;
             --fg-color: white;
+            --stroke-width: 0.5;
+            --custom-font: 'Libre Caslon Display', serif;
         }
 
         #page {
@@ -20,7 +26,7 @@
 
         body,
         html {
-            font-family: monospace;
+            font-family: 'Montserrat', sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
@@ -28,11 +34,11 @@
 
         h1,
         a {
-            line-height: 2.3em;
+            line-height: 1.5em;
             font-weight: 100;
-            font-size: 1.2em;
+            font-size: 1.1em;
             text-align: center;
-            letter-spacing: -0.03em;
+            letter-spacing: 0.07em;
         }
 
         a,
@@ -52,6 +58,24 @@
             align-items: center;
         }
 
+        @media screen and (max-width: 900px) {
+            .container>* {
+                zoom: 0.7;
+            }
+        }
+
+        @media screen and (max-width: 640px) {
+            .container>* {
+                zoom: 0.6;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .container>* {
+                zoom: 0.4;
+            }
+        }
+
         #main {
             color: var(--fg-color);
             background: linear-gradient(180deg, #0950af, transparent 20vh);
@@ -67,40 +91,89 @@
     <div id="page">
         <div id="main" class="container">
             <svg width="400" height="200" xmlns="http://www.w3.org/2000/svg">
-                <g>
-                    <g>
-                        <g stroke="null">
-                            <path stroke="var(--fg-color)" stroke-width="3"
-                                d="m4.460593,12.60773l388.99749,-0.45313c0.70196,0.45313 35.91683,28.45313 -185.67173,30.45313c-221.58855,2 -203.32576,-30 -203.32576,-30z"
-                                fill-opacity="null" stroke-opacity="null" fill="var(--bg-color)" />
-                            <path stroke="var(--fg-color)" stroke-width="3"
-                                d="m26.335033,30.581768l345.48144,-0.427167c0.62343,0.427167 31.89891,26.822878 -164.90116,28.708286c-196.80006,1.885408 -180.58028,-28.281119 -180.58028,-28.281119z"
-                                fill-opacity="null" stroke-opacity="null" fill="var(--bg-color)" />
-                            <path stroke="var(--fg-color)" stroke-width="3"
-                                d="m74.337303,53.018701l249.98789,-0.36412c0.45111,0.36412 23.08183,22.8637 -119.32129,24.47081c-142.40312,1.60711 -130.6666,-24.10669 -130.6666,-24.10669z"
-                                fill-opacity="null" stroke-opacity="null" fill="var(--bg-color)" />
-                        </g>
-                        <path stroke="var(--fg-color)"
-                            d="m155.152034,8.475252l91.48987,-0.45313l41.8581,35l-58.60135,48l-68.16892,0l-50.22973,-50l43.65203,-32.54687z"
-                            fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="var(--bg-color)" />
-                    </g>
-                    <text
-                        transform="matrix(5.268220118981224,0,0,5.268220118981224,-1308.503014314062,-1179.5162574706733) "
-                        font-weight="normal" stroke="var(--fg-color)" xml:space="preserve" text-anchor="start"
-                        font-family="'Courier New', Courier, monospace" font-size="17" id="svg_32" y="237.24644"
-                        x="281.246077" stroke-opacity="null" stroke-width="0" fill="var(--fg-color)">N</text>
-                    <text
-                        transform="matrix(2.5186930933681992,0,0,2.5186930933681992,-477.8391838451255,-466.09753886264986) "
-                        font-weight="normal" stroke="var(--fg-color)" xml:space="preserve" text-anchor="start"
-                        font-family="'Courier New', Courier, monospace" font-size="14" id="svg_31" y="230.173745"
-                        x="250.501143" fill-opacity="null" stroke-opacity="null" stroke-width="0"
-                        fill="var(--fg-color)">neow.</text>
-                </g>
+                <path stroke="var(--fg-color)" stroke-width="var(--stroke-width)"
+                    d="m4.460593,12.60773l388.99749,-0.45313c0.70196,0.45313 35.91683,28.45313 -185.67173,30.45313c-221.58855,2 -203.32576,-30 -203.32576,-30z"
+                    fill="var(--bg-color)" />
+                <path stroke="var(--fg-color)" stroke-width="var(--stroke-width)"
+                    d="m26.335033,30.581768l345.48144,-0.427167c0.62343,0.427167 31.89891,26.822878 -164.90116,28.708286c-196.80006,1.885408 -180.58028,-28.281119 -180.58028,-28.281119z"
+                    fill="var(--bg-color)" />
+                <path stroke="var(--fg-color)" stroke-width="var(--stroke-width)"
+                    d="m74.337303,53.018701l249.98789,-0.36412c0.45111,0.36412 23.08183,22.8637 -119.32129,24.47081c-142.40312,1.60711 -130.6666,-24.10669 -130.6666,-24.10669z"
+                    fill="var(--bg-color)" />
+                <path stroke="var(--fg-color)"
+                    d="m155.152034,9.475252l91.48987,-0.45313l41.8581,35l-58.60135,48l-68.16892,0l-50.22973,-50l43.65203,-32.54687z"
+                    stroke-width="0" fill="var(--bg-color)" />
+                <text font-weight="100" xml:space="preserve" text-anchor="middle" font-family="var(--custom-font)"
+                    font-size="70" id="svg_32" y="50" x="200" fill="var(--fg-color)">N</text>
+                <text font-weight="100" stroke="var(--fg-color)" xml:space="preserve" text-anchor="middle"
+                    font-family="'Montserrat', sans-serif" font-size="18" id="svg_31" y="85" x="198.5"
+                    letter-spacing="9" stroke-width="0" fill="var(--fg-color)">neow</text>
             </svg>
-            <h1>modern, fast, and robust <br /> it's the front-end framework to fall inlove with</h1>
-            <a href="https://github.com/neo-web/neow">Coming soon</a>
+            <h1>modern, fast, and light<br /> it's the front-end framework to fall inlove with</h1>
+            <a>coming soon</a>
+        </div>
+        <div id="intro" class="container">
+            <pre><code class="typescript">
+        import {Component} from '@neow/core';
+
+        class HelloWorld extends Component {
+            static get template() { return `
+                &lt;span
+                    onclick="{{ this.changeNumber() }}">
+                    Click me to change the magic number: {{ this.magicNumber }}     
+                &lt;/span>`
+            };
+            
+            constructor() {
+                super();
+                this.magicNumber = '42';
+            }
+            
+            changeNumber() {
+                this.magicNumber = (Math.random() * 100).toFixed(0);
+            }
+        }
+        customElements.define('hello-world', HelloWorld);
+            </code></pre>
+            <hello-world></hello-world>
         </div>
     </div>
+    <script type="module">
+        // import {Component} from 'https://unpkg.com/@neow/core@0.0.4/dist/index.js';
+        import {Component} from '../core/dist/index.js';
+        class HelloWorld extends Component {
+            static get template() { return `
+                <style>
+                    :host {
+                        color: white;
+                        cursor: pointer;
+                        user-select: none;
+                        transition: 50ms linear;
+                    }
+                    :host(:hover) {
+                        background: white;
+                        color: black;
+                    }
+                    span {
+                        display: inline-block;
+                        padding: 1em;
+                    }
+                </style>
+                <span onclick="{{this.changeNumber()}}">Click me to change the magic number: {{this.magicNumber}}</span>`
+            };
+            
+            constructor() {
+                super();
+                this.magicNumber = '42';
+            }
+            
+            changeNumber() {
+                this.magicNumber = (Math.random() * 100).toFixed(0);
+            }
+        }
+        customElements.define('hello-world', HelloWorld);
+        hljs.highlightBlock(document.querySelector('code.typescript'));
+    </script>
 </body>
 
 </html>
