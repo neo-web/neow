@@ -4,7 +4,7 @@
   "description": "Modern web standards based UI authoring tools and libraries",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "lerna run dev --parallel --stream"
   },
   "author": "eavichay@gmail.com",
   "license": "GPL-3.0",

@@ -1,0 +1,16 @@
+{
+  "name": "@neow/components",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prepublishOnly": "npm run build",
+    "build": "rollup -c",
+    "dev": "NODE_ENV=development rollup -c --watch"
+  },
+  "dependencies": {
+    "@neow/core": "*"
+  },
+  "author": "eavichay@gmail.com",
+  "license": "GPL-3.0"
+}

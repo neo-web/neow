@@ -1,4 +1,5 @@
 import {Component, Injector} from '../node_modules/@neow/core/dist/index.js';
+import {RouterOutlet} from '../node_modules/@neow/components/dist/router.js';
 
 class RandomUserService {
     async getUser(userId) {
@@ -17,17 +18,21 @@ class UserCard extends Component {
         super();
     }
 
-    static template = `
+    static get template () {return `
         <div #if="{{!this.userData}}">Loading...</div>
         <div #if="{{this.userData}}">
-            <h1>Random User: {{this.userData.name.first}}, {{this.userData.name.last}}</h1>
-            <img title="{{this.userData.name.last}}" src="{{this.userData.picture.large}}">
+            <h1>Random User: {{this.userData.name.first}}, {{this.userData.name.last}} ({{this.getAttribute('user-id')}})</h1>
+            <img onclick="{{this.notify()}}" title="{{this.userData.name.last}}" src="{{this.userData.picture.large}}">
         </div>
-    `;
+    `;}
 
-    static requirements = ['userService'];
+    static get requirements() { return ['userService']; }
 
-    static observedAttributes = ['user-id'];
+    static get observedAttributes() { return ['user-id']; }
+
+    notify() {
+        alert('kuku');
+    }
 
     attributeChangedCallback() {
         const userId = this.getAttribute('user-id');

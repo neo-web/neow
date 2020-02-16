@@ -6,7 +6,20 @@
     <title>RANDOM USER DEMO</title>
 </head>
 <body>
-    <random-user user-id="35"></random-user>
+    <hr/>
+    <a href="#/main">MAIN</a>
+    <a href="#/user/6">USER 6</a>
+    <a href="#/user/8">USER 6</a>
     <script type="module" src="./index.js"></script>
+    <neo-router
+        pattern="/user/:id"
+        component="random-user"
+        attribute:user-id=":id"
+    >
+        <h1>USER</h1>
+    </neo-router>
+    <neo-router pattern="/main">
+        <h2>MAIN</h2>
+    </neo-router>
 </body>
 </html>
