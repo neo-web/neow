@@ -66,7 +66,7 @@ export const scanDOMTree = (root: Node, element: HTMLElement, localDirectives: D
                     if (attr.nodeName.startsWith('on')) {
                         const eventName = attr.nodeName.slice(2);
                         const fn = new Function(`event`, expression.slice(2, -2) + ';');
-                        element.removeAttribute(attr.nodeName);
+                        (currentNode as HTMLElement).removeAttribute(attr.nodeName);
                         (currentNode as any)['on' + eventName] = (event: Event) => {
                             fn.call(element, event);
                         };

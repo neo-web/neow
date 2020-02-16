@@ -15,9 +15,12 @@ const common = {
             typescript: require('typescript')
         }),
         sourcemaps(),
-        terser(),
     ]
 };
+
+if (process.env.NODE_ENV !== 'development') {
+    common.plugins.push(terser());
+}
 
 export default {
     input: './lib/index.ts',
