@@ -25,10 +25,16 @@ const propagate = (binders: Binders) => (key: string) => {
     });
 }
 
-export const scanDOMTree = (root: Node, element: HTMLElement, localDirectives: Directive[] = []) => {
+type scanDOMTreeOptions = {
+    root: Node;
+    element: HTMLElement;
+    directives?: Directive[];
+};
+
+export const scanDOMTree = (options: scanDOMTreeOptions) => {
+    const { directives: localDirectives = [], root, element } = options;
     const directives = Registry.getDirectives().concat(localDirectives);
     const binders: Binders = {};
-    const update = propagate(binders);
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
     let currentNode: Node|null;
     while (currentNode = walker.nextNode()) {
@@ -113,6 +119,6 @@ export const scanDOMTree = (root: Node, element: HTMLElement, localDirectives: D
     }
     return {
         paths: Object.keys(binders),
-        update
+        update: propagate(binders)
     };
 }

@@ -5,7 +5,7 @@ interface DirectiveOptions<T = any> {
     componentNode: Element | HTMLElement;
     attribute: Attr;
     expression: string | null;
-    paths: string[];
+    paths: string[]
 }
 
 export interface Directive<T = any> {

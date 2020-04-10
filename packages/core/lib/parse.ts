@@ -6,10 +6,10 @@ export interface ExpressionDescriptor {
     expressions: string[]
 };
 
-export const parse = (expression: string): ExpressionDescriptor => {
+export const parse = (expression: string, useThis = true): ExpressionDescriptor => {
     let match: RegExpExecArray | null;
     const paths: string[] = [];
-    const regexp = /(this\.[\w+|\d*]*)+/gi;
+    const regexp = useThis ? /(this\.[\w+|\d*]*)+/gi : /(\.[\w+|d*]*)+/gi
     while (match = regexp.exec(expression)) {
         paths.push(match[1]);
     }

@@ -1,5 +1,6 @@
 import {Component, Injector} from '../node_modules/@neow/core/dist/index.js';
 import {RouterOutlet} from '../node_modules/@neow/components/dist/router.js';
+import {StyleLoader} from '../node_modules/@neow/components/dist/styleloader.js';
 
 class RandomUserService {
     async getUser(userId) {
@@ -16,9 +17,12 @@ class UserCard extends Component {
 
     constructor() {
         super();
+        this.counter = 0;
     }
 
-    static get template () {return `
+    static get template () {return /*html*/`
+        <neo-style-loader src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></neo-style-loader>
+        <div>{{this.counter}}</div>
         <div #if="{{!this.userData}}">Loading...</div>
         <div #if="{{this.userData}}">
             <h1>Random User: {{this.userData.name.first}}, {{this.userData.name.last}} ({{this.getAttribute('user-id')}})</h1>
@@ -40,6 +44,7 @@ class UserCard extends Component {
         if (userId) {
             setTimeout(async () => {
                 this.userData = await this.dependencies.userService.getUser(userId);
+                this.counter++;
                 console.log(this.userData);
             }, 1500);
             

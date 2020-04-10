@@ -2,7 +2,6 @@ import typescript from 'rollup-plugin-typescript2';
 import pkg from './package.json';
 import { terser } from 'rollup-plugin-terser';
 import sourcemaps from 'rollup-plugin-sourcemaps';
-import path from 'path';
 
 const common = {
     external: [
@@ -13,13 +12,14 @@ const common = {
         typescript({
             clean: true,
             typescript: require('typescript')
-        }),
-        sourcemaps(),
+        })
     ]
 };
 
 if (process.env.NODE_ENV !== 'development') {
+    console.log('Compiling in production');
     common.plugins.push(terser());
+    common.plugins.push(sourcemaps());
 }
 
 export default {

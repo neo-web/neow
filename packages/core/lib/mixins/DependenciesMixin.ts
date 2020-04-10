@@ -1,7 +1,6 @@
 import {Injector, Requirement} from '../Injector';
-import { Constructor } from './Constructor';
 
-export function DependenciesMixin<T extends any>(BaseClass: Constructor<T>) {
+export function DependenciesMixin(BaseClass: any) {
     // @ts-ignore
     return class DependenciesMixinClass extends BaseClass {
         
@@ -17,5 +16,5 @@ export function DependenciesMixin<T extends any>(BaseClass: Constructor<T>) {
                 }
             })
         }
-    }
+    } as InstanceType<any>
 }

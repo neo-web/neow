@@ -31,9 +31,14 @@ class RouterServiceClass {
         const urlParams = (window.location.href.split('?')[1] || '').split('&');
         const parts = newHash.split('/').slice(1);
         this.outlets.forEach(outlet => {
+            let rootRouter = false;
             const {pattern} = outlet;
             const patternParts = pattern.split('/').slice(1);
-            if (patternParts[0] !== parts[0]) {
+            rootRouter = patternParts[0] === '' && parts.length === 0;
+            if (rootRouter) {
+                console.log(outlet);
+            }
+            if (!rootRouter && patternParts[0] !== parts[0]) {
                 outlet.dispose();
                 return;
             }
@@ -77,6 +82,7 @@ export class RouterOutlet extends HTMLElement {
     
     constructor() {
         super();
+        this.style.visibility = 'hidden';
         const shadow = this.attachShadow({mode: 'closed'});
         shadow.innerHTML = RouterOutlet.template;
         this.slotEl = shadow.querySelector('slot') as HTMLSlotElement;
@@ -111,7 +117,7 @@ export class RouterOutlet extends HTMLElement {
     }
 
     process(routeInfo: RouteInfo) {
-        this.slotEl.setAttribute('name', 'router-outlet');
+        this.style.visibility = 'visible';
         const componentTagName = this.getAttribute('component');
         const attributeSet:Record<string, string> = {};
         if (!this.componentEl && componentTagName) {
@@ -119,12 +125,12 @@ export class RouterOutlet extends HTMLElement {
                 this.componentEl = this.createComponent(componentTagName);
                 this.componentEl.setAttribute('slot', 'router-outlet');
                 this.appendChild(this.componentEl);
-                
             } catch (err) {
                 console.error(err);
             }
         }
         if (this.componentEl) {
+            this.slotEl.setAttribute('name', 'router-outlet');
             Array.from(this.attributes).forEach(attr => {
                 if (attr.nodeName.startsWith('attribute:')) {
                     const attributeName = attr.nodeName.slice(10);
@@ -137,10 +143,13 @@ export class RouterOutlet extends HTMLElement {
                 }
             });
             this.updateAttributes(attributeSet);
+        } else {
+            this.slotEl.removeAttribute('name');
         }
     }
 
     dispose() {
+        this.style.visibility = 'hidden';
         if (this.componentEl) {
             this.componentEl.remove();
         }

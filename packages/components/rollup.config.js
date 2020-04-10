@@ -19,12 +19,19 @@ const common = {
     ]
 };
 
-export default {
-    input: './src/Router.ts',
-    treeshake: false,
-    output: [{
-        file: './dist/router.js',
-        format: 'es',
-    }],
-    ...common
-};
+const files = ['Router', 'StyleLoader'];
+const configs = files.map(srcFile => {
+    return {
+        input: path.resolve(__dirname, 'src', srcFile + '.ts'),
+        treeshake: false,
+        output: [
+            {
+                file: path.resolve(__dirname, 'dist', srcFile.toLocaleLowerCase() + '.js'),
+                format: 'es',
+            }
+        ],
+        ...common
+    }
+});
+
+export default configs;

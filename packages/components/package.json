@@ -11,6 +11,9 @@
   "dependencies": {
     "@neow/core": "*"
   },
+  "devDependencies": {
+    "rollup": "2.3.4"
+  },
   "author": "eavichay@gmail.com",
   "license": "GPL-3.0"
 }
