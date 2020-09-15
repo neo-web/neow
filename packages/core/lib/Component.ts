@@ -1,13 +1,19 @@
 import {ComponentMixin, updateElement} from './mixins/ComponentMixin';
-import {DependenciesMixin} from './mixins/DependenciesMixin';
+import { DependenciesMixin } from './mixins/DependenciesMixin';
+
+export const NEOW_COMPONENT = Symbol();
 
 export class Component extends (ComponentMixin(DependenciesMixin(HTMLElement))) {
+
     constructor() {
         super();
     }
+
+    static get [NEOW_COMPONENT]() { return true; }
+
     public requestUpdate() {
         requestAnimationFrame(() => {
-            updateElement(<unknown>this as HTMLElement);
+            updateElement(this);
         })
     }
     public toString() {

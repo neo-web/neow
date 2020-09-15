@@ -6,9 +6,6 @@ const ifDirective: Directive = {
     process: ({targetNode, componentNode}) => {
         const hook = document.createComment('-if-');
         targetNode.parentNode!.insertBefore(hook, targetNode);
-        requestAnimationFrame(() => {
-            updateElement(componentNode);
-        })
         return (value: any) => {
             if (!!value) {
                 hook.parentNode!.insertBefore(targetNode, hook);

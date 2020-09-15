@@ -18,9 +18,40 @@ class UserCard extends Component {
     constructor() {
         super();
         this.counter = 0;
+        this.someData = Array(3000).fill('').map((x, i) => i);
+
+        this.xdir = 'up';
+
+        console.log(this.xdir);
+        const fn = () => {
+            console.log(this.xdir);
+            if (this.xdir === 'stop') {
+                console.log('DONE');
+                return;
+            }
+            if (this.xdir === 'up') {
+                this.addData();
+            }
+            if(this.xdir === 'down') {
+                this.removeData();
+            }
+            if (this.someData.length === 1) {
+                this.xdir = 'up';
+            }
+            if (this.someData.length === 20) {
+              this.xdir = 'down';
+            }
+            console.log(this.someData.length);
+            // setTimeout(() => fn(), 50);
+        }
+        fn();
+
+        setTimeout(() => {
+            this.someData = this.someData.map(x => Math.random());
+        }, 730);
     }
 
-    static get template () {return /*html*/`
+    static get template () {return /*html*/ `
         <neo-style-loader src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"></neo-style-loader>
         <div>{{this.counter}}</div>
         <div #if="{{!this.userData}}">Loading...</div>
@@ -28,6 +59,7 @@ class UserCard extends Component {
             <h1>Random User: {{this.userData.name.first}}, {{this.userData.name.last}} ({{this.getAttribute('user-id')}})</h1>
             <img onclick="{{this.notify()}}" title="{{this.userData.name.last}}" src="{{this.userData.picture.large}}">
         </div>
+        <div onclick="{{this.addData()}}" #repeat="{{this.someData}}">Value: {{value}} - Index: {{index}} ----- {{this.userData.name.last}}</div>
     `;}
 
     static get requirements() { return ['userService']; }
@@ -35,7 +67,17 @@ class UserCard extends Component {
     static get observedAttributes() { return ['user-id']; }
 
     notify() {
-        alert('kuku');
+        this.xdir = 'stop';
+        console.log('stop');
+        this.userData = this.userData;
+    }
+
+    addData() {
+        this.someData = [...this.someData, Math.random()];
+    }
+
+    removeData() {
+        this.someData = this.someData.slice(0, -1);
     }
 
     attributeChangedCallback() {

@@ -1,7 +1,9 @@
 import {Directive, Registry} from './directive';
-import {ExpressionDescriptor, parse} from './parse';
+import {parse} from './parse';
 
-type Binders = Record<string, Function[]>;
+const isPropogating = Symbol();
+
+type Binders = Record<string | symbol, Function[]>;
 
 const addPath = (path: string, fn: Function, binders: Binders) => {
     if (binders[path]) {
@@ -12,16 +14,32 @@ const addPath = (path: string, fn: Function, binders: Binders) => {
 }
 
 const propagate = (binders: Binders) => (key: string) => {
-    Object.keys(binders).forEach(path => {
-        if (key === '*' || path.startsWith('this.' + key)) {
-            binders[path].forEach(fn => {
-                try {
-                    return fn();
-                } catch (err) {
-                    return '';
-                }
+    // @ts-ignore
+    if (binders[isPropogating]) {
+        return;
+    }
+    requestAnimationFrame(() => {
+        (key && key !== '*' ? [key] : Object.keys(binders)).forEach(path => {
+            (binders[path] || []).forEach((fn) => {
+              try {
+                return fn();
+              } catch (err) {
+                return '';
+              }
             });
-        }
+            // @ts-ignore
+            binders[isPropogating] = false;
+            return;
+            if (key === '*' || path.startsWith('this.' + key)) {
+                binders[path].forEach(fn => {
+                    try {
+                        return fn();
+                    } catch (err) {
+                        return '';
+                    }
+                });
+            }
+        });
     });
 }
 
@@ -29,24 +47,32 @@ type scanDOMTreeOptions = {
     root: Node;
     element: HTMLElement;
     directives?: Directive[];
+    customArguments?: Record<string, any>
 };
 
+const CONTEXT = Symbol();
+
 export const scanDOMTree = (options: scanDOMTreeOptions) => {
-    const { directives: localDirectives = [], root, element } = options;
+    const markedAttributesToRemove = new Set<Attr>();
+    const { directives: localDirectives = [], root, element, customArguments = {} } = options;
     const directives = Registry.getDirectives().concat(localDirectives);
-    const binders: Binders = {};
+    const binders: Binders = {
+        [isPropogating]: false
+    };
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
-    let currentNode: Node|null;
-    while (currentNode = walker.nextNode()) {
+    const argumentKeys = Object.keys(customArguments);
+    const argumentValues = Object.values(customArguments);
+    const enforceUseThis = argumentKeys.length === 0;
+    let currentNode: Node | null = enforceUseThis ? walker.nextNode() : walker.currentNode;
+    for (; currentNode; currentNode = walker.nextNode()) {
         if (currentNode.nodeType === Node.ELEMENT_NODE) {
+            (<any>currentNode)[CONTEXT] = root;
             const attributes = Array.from((currentNode as Element).attributes);
             attributes.forEach(attr => {
-                const { expression, paths } = parse(attr.nodeValue || '');
+                const { expression, paths } = parse(attr.nodeValue || '', enforceUseThis);
                 directives.forEach(directive => {
                     if ((typeof directive.attribute === attr.nodeName) || (directive.attribute as Function)(attr)) {
-                        requestAnimationFrame(() => {
-                            (<Element>attr.ownerElement).removeAttribute(attr.nodeName);
-                        });
+                        markedAttributesToRemove.add(attr);
                         const invocation = directive.process({
                             attribute: attr,
                             expression,
@@ -55,12 +81,14 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                             targetNode: attr.ownerElement as HTMLElement
                         });
                         if (invocation) {
-                            const fn = new Function(`return (${(expression || '').slice(2, -2)});`)
+                            const fn = new Function(...argumentKeys, `return (${(expression || '').slice(2, -2)});`)
                             paths.forEach(path => {
                                 addPath(path, () => {
-                                    const value = fn.call(element);
-                                    invocation(value);
+                                    
+                                    const value = fn.call(element, ...argumentValues);
+                                    invocation(value, () => propagate(binders)(''));
                                 }, binders);
+                                (element as any)['$$$'] = binders;
                             });
                         }
                     }
@@ -71,15 +99,15 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                 if (expression) {
                     if (attr.nodeName.startsWith('on')) {
                         const eventName = attr.nodeName.slice(2);
-                        const fn = new Function(`event`, expression.slice(2, -2) + ';');
-                        (currentNode as HTMLElement).removeAttribute(attr.nodeName);
-                        (currentNode as any)['on' + eventName] = (event: Event) => {
-                            fn.call(element, event);
-                        };
+                        const fn = new Function('event', ...argumentKeys, expression.slice(2, -2) + ';');
+                        markedAttributesToRemove.add(attr);
+                        (currentNode as HTMLElement).addEventListener(eventName, (event: Event) => {
+                            fn.call(element, event, ...argumentValues);
+                        });
                     } else {
                         paths.forEach(path => {
-                            const fn = new Function(`return ${expression.slice(2, -2)};`);
-                            addPath(path, () => attr.nodeValue = String(fn.call(element)), binders);
+                            const fn = new Function(...argumentKeys, `return ${expression.slice(2, -2)};`);
+                            addPath(path, () => attr.nodeValue = String(fn.call(element, ...argumentValues)), binders);
                         });
                     }
                 }
@@ -91,18 +119,18 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
         } else if (!(currentNode.nodeValue || '').includes('{{')) {
             continue;
         }
-        const { expression, expressions, paths } = parse(currentNode.nodeValue || '');
+        const { expression, expressions, paths } = parse(currentNode.nodeValue || '', enforceUseThis);
         if (expression) {
             const oText = currentNode.nodeValue || '';
             const map: Record<string, Function> = expressions.reduce((o: any, e) => {
-                o[e] = new Function(`return ${e.slice(2, -2).trim()};`);
+                o[e] = new Function(...argumentKeys, `return ${e.slice(2, -2).trim()};`);
                 return o;
             }, {});
             const node = currentNode as Text;
             const modify = () =>
                 Object.keys(map).reduce((text, expression) => {
                     try {
-                        const joinValue = map[expression].call(element);
+                        const joinValue = map[expression].call(element, ...argumentValues);
                         let resolvedValue = (typeof joinValue === 'undefined') ? '' : joinValue;
                         return text.split(expression).join(resolvedValue);
                     } catch (err) {
@@ -117,6 +145,12 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
             });
         }
     }
+    requestAnimationFrame(() => {
+        markedAttributesToRemove.forEach(attr => {
+            if (attr.ownerElement)
+              (<Element>attr.ownerElement).removeAttribute(attr.nodeName);
+        });
+    });
     return {
         paths: Object.keys(binders),
         update: propagate(binders)
