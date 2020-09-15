@@ -13,8 +13,7 @@ const repeatDirective: Directive = {
     targetNode.remove();
     const clones: HTMLElement[] = [];
     const updateMap = new Map<HTMLElement, Function>();
-    return (value: Array<any> = [], updateAll: Function = () => { }) => {
-      updateAll();
+    const handler = (value: Array<any> = []) => {
       const dataLength = value.length;
       // remove extra
       if (clones.length > value.length) {
@@ -56,6 +55,8 @@ const repeatDirective: Directive = {
         }
       }
     }
+    handler.sideEffect = true;
+    return handler;
   }
 }
 

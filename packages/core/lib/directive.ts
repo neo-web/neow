@@ -10,7 +10,7 @@ interface DirectiveOptions<T = any> {
 
 export interface Directive<T = any> {
     attribute: string | ((attr: Attr) => any);
-    process: (options: DirectiveOptions<T>) => Function|void;
+    process: (options: DirectiveOptions<T>) => (Function & {sideEffect?: boolean})|void;
     registerAsGlobal?: (register: DirectiveRegister|undefined) => void;
 }
 

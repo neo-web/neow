@@ -1,6 +1,6 @@
-import {Component, Injector} from '../node_modules/@neow/core/dist/index.js';
-import {RouterOutlet} from '../node_modules/@neow/components/dist/router.js';
-import {StyleLoader} from '../node_modules/@neow/components/dist/styleloader.js';
+import {Component, Injector} from '../../packages/core/dist/index.js'
+import {RouterOutlet} from '../../packages/components/dist/router.js';
+import {StyleLoader} from '../../packages/components/dist/styleloader.js';
 
 class RandomUserService {
     async getUser(userId) {

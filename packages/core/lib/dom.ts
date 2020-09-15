@@ -5,6 +5,8 @@ const isPropogating = Symbol();
 
 type Binders = Record<string | symbol, Function[]>;
 
+const boundNodes = new WeakMap<HTMLElement, Array<Text | Attr | HTMLElement>>();
+
 const addPath = (path: string, fn: Function, binders: Binders) => {
     if (binders[path]) {
         binders[path].push(fn);
@@ -13,7 +15,7 @@ const addPath = (path: string, fn: Function, binders: Binders) => {
     }
 }
 
-const propagate = (binders: Binders) => (key: string) => {
+const propagate = (binders: Binders, sideEffects: Function[] = []) => (key: string) => {
     // @ts-ignore
     if (binders[isPropogating]) {
         return;
@@ -27,19 +29,13 @@ const propagate = (binders: Binders) => (key: string) => {
                 return '';
               }
             });
-            // @ts-ignore
-            binders[isPropogating] = false;
-            return;
-            if (key === '*' || path.startsWith('this.' + key)) {
-                binders[path].forEach(fn => {
-                    try {
-                        return fn();
-                    } catch (err) {
-                        return '';
-                    }
-                });
-            }
         });
+        if (binders['*']) {
+            binders['*'].forEach(fn => fn());
+        }
+        // @ts-ignore
+        binders[isPropogating] = false;
+        sideEffects.forEach(fn => fn());
     });
 }
 
@@ -59,6 +55,7 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
     const binders: Binders = {
         [isPropogating]: false
     };
+    const sideEffects: Function[] = [];
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
     const argumentKeys = Object.keys(customArguments);
     const argumentValues = Object.values(customArguments);
@@ -82,14 +79,23 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                         });
                         if (invocation) {
                             const fn = new Function(...argumentKeys, `return (${(expression || '').slice(2, -2)});`)
+                            let update = () => { };
                             paths.forEach(path => {
-                                addPath(path, () => {
-                                    
+                                update = () => {
                                     const value = fn.call(element, ...argumentValues);
-                                    invocation(value, () => propagate(binders)(''));
-                                }, binders);
+                                    invocation(value, () => {
+                                        Promise.resolve().then(() => {
+                                            debugger;
+                                            Object.keys(binders).filter(key => key !== path).forEach(key => typeof binders[key] === 'function' && (binders[key] as unknown as Function)());
+                                        });
+                                    });
+                                };
+                                addPath(path, update, binders);
                                 (element as any)['$$$'] = binders;
                             });
+                            if (invocation.sideEffect) {
+                                addPath('*', update, binders);
+                            }
                         }
                     }
                 });
@@ -153,6 +159,6 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
     });
     return {
         paths: Object.keys(binders),
-        update: propagate(binders)
+        update: propagate(binders, sideEffects),
     };
 }
