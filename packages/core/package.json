@@ -1,6 +1,6 @@
 {
   "name": "@neow/core",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Core libraries for neow",
   "author": "eavichay <eavichay@gmail.com>",
   "homepage": "https://github.com/neo-web/neow#readme",
@@ -22,12 +22,16 @@
     "type": "git",
     "url": "git+https://github.com/neo-web/neow.git"
   },
+  "size": {
+    "max": 2300
+  },
   "devDependencies": {
+    "gzip-size-cli": "^3.0.0",
     "rollup": "2.3.4"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "rm ./dist/index.js.gz || echo '' && NODE_ENV=production rollup -c && gzip ./dist/index.js --keep",
+    "build": "rm -rf ./dist || echo '' && NODE_ENV=production rollup -c && node ./test-size.js",
     "dev": "NODE_ENV=development rollup -c --watch"
   },
   "bugs": {

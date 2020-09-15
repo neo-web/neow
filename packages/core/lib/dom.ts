@@ -5,8 +5,6 @@ const isPropogating = Symbol();
 
 type Binders = Record<string | symbol, Function[]>;
 
-const boundNodes = new WeakMap<HTMLElement, Array<Text | Attr | HTMLElement>>();
-
 const addPath = (path: string, fn: Function, binders: Binders) => {
     if (binders[path]) {
         binders[path].push(fn);
