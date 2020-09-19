@@ -47,7 +47,10 @@ class UserCard extends Component {
         fn();
 
         setTimeout(() => {
-            this.someData = this.someData.map(x => Math.random());
+            this.someData = this.someData.map(x => ({
+                value: Math.random(),
+                id: Math.random(),
+            }));
         }, 730);
     }
 
@@ -59,7 +62,10 @@ class UserCard extends Component {
             <h1>Random User: {{this.userData.name.first}}, {{this.userData.name.last}} ({{this.getAttribute('user-id')}})</h1>
             <img onclick="{{this.notify()}}" title="{{this.userData.name.last}}" src="{{this.userData.picture.large}}">
         </div>
-        <div onclick="{{this.addData()}}" #repeat="{{this.someData}}">Value: {{value}} - Index: {{index}} ----- {{this.userData.name.last}}</div>
+        <div onclick="{{this.addData()}}" #repeat="{{this.someData}}">
+            <span>{{value.value}}</span>
+            Value: {{value.value}} ID: {{value.id}} - Index: {{index}} ----- {{this.userData.name.last}}
+        </div>
     `;}
 
     static get requirements() { return ['userService']; }

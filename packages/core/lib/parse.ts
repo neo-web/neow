@@ -9,7 +9,7 @@ export interface ExpressionDescriptor {
 export const parse = (expression: string, useThis = true): ExpressionDescriptor => {
     let match: RegExpExecArray | null;
     const paths: string[] = [];
-    const regexp = useThis ? /(this\.[\w+|\d*]*)+/gi : /\{\{([\w+|\d*]+)+\}\}/gi;
+    const regexp = useThis ? /(this\.[\w+|\d*]*)+/gi : /\{\{([\w+|\d*]+)+(\.\w+)*\}\}/gi; // /\{\{([\w+|\d*]+)+\}\}/gi;
     // @ts-ignore
     while (match = regexp.exec(expression)) {
         paths.push(match[1]);

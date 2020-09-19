@@ -13,28 +13,26 @@ const addPath = (path: string, fn: Function, binders: Binders) => {
     }
 }
 
-const propagate = (binders: Binders, sideEffects: Function[] = []) => (key: string) => {
+const propagate = (binders: Binders, sideEffects: Function[] = []) => (key?: string) => {
     // @ts-ignore
     if (binders[isPropogating]) {
         return;
     }
-    requestAnimationFrame(() => {
-        (key && key !== '*' ? [key] : Object.keys(binders)).forEach(path => {
-            (binders[path] || []).forEach((fn) => {
-              try {
-                return fn();
-              } catch (err) {
-                return '';
-              }
-            });
+    (key && key !== '*' ? [key] : Object.keys(binders)).forEach(path => {
+        (binders[path] || []).forEach((fn) => {
+            try {
+            return fn();
+            } catch (err) {
+            return '';
+            }
         });
-        if (binders['*']) {
-            binders['*'].forEach(fn => fn());
-        }
-        // @ts-ignore
-        binders[isPropogating] = false;
-        sideEffects.forEach(fn => fn());
     });
+    if (binders['*']) {
+        binders['*'].forEach(fn => fn());
+    }
+    // @ts-ignore
+    binders[isPropogating] = false;
+    sideEffects.forEach(fn => fn());
 }
 
 type scanDOMTreeOptions = {
@@ -44,7 +42,7 @@ type scanDOMTreeOptions = {
     customArguments?: Record<string, any>
 };
 
-const CONTEXT = Symbol();
+// const CONTEXT = Symbol();
 
 export const scanDOMTree = (options: scanDOMTreeOptions) => {
     const markedAttributesToRemove = new Set<Attr>();
@@ -61,7 +59,7 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
     let currentNode: Node | null = enforceUseThis ? walker.nextNode() : walker.currentNode;
     for (; currentNode; currentNode = walker.nextNode()) {
         if (currentNode.nodeType === Node.ELEMENT_NODE) {
-            (<any>currentNode)[CONTEXT] = root;
+            // (<any>currentNode)[CONTEXT] = root;
             const attributes = Array.from((currentNode as Element).attributes);
             attributes.forEach(attr => {
                 const { expression, paths } = parse(attr.nodeValue || '', enforceUseThis);
@@ -80,13 +78,8 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                             let update = () => { };
                             paths.forEach(path => {
                                 update = () => {
-                                    const value = fn.call(element, ...argumentValues);
-                                    invocation(value, () => {
-                                        Promise.resolve().then(() => {
-                                            debugger;
-                                            Object.keys(binders).filter(key => key !== path).forEach(key => typeof binders[key] === 'function' && (binders[key] as unknown as Function)());
-                                        });
-                                    });
+                                    const value = fn.call(element, ...argumentValues.map(x => x(currentNode)));
+                                    invocation(value);
                                 };
                                 addPath(path, update, binders);
                                 (element as any)['$$$'] = binders;
@@ -106,12 +99,12 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                         const fn = new Function('event', ...argumentKeys, expression.slice(2, -2) + ';');
                         markedAttributesToRemove.add(attr);
                         (currentNode as HTMLElement).addEventListener(eventName, (event: Event) => {
-                            fn.call(element, event, ...argumentValues);
+                            fn.call(element, event, ...argumentValues.map(x => x()));
                         });
                     } else {
                         paths.forEach(path => {
                             const fn = new Function(...argumentKeys, `return ${expression.slice(2, -2)};`);
-                            addPath(path, () => attr.nodeValue = String(fn.call(element, ...argumentValues)), binders);
+                            addPath(path, () => attr.nodeValue = String(fn.call(element, ...argumentValues.map(x => x()))), binders);
                         });
                     }
                 }
@@ -134,7 +127,7 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
             const modify = () =>
                 Object.keys(map).reduce((text, expression) => {
                     try {
-                        const joinValue = map[expression].call(element, ...argumentValues);
+                        const joinValue = map[expression].call(element, ...argumentValues.map(x => x(node)));
                         let resolvedValue = (typeof joinValue === 'undefined') ? '' : joinValue;
                         return text.split(expression).join(resolvedValue);
                     } catch (err) {
@@ -143,13 +136,10 @@ export const scanDOMTree = (options: scanDOMTreeOptions) => {
                 }, oText);
             paths.forEach(path => {
                 addPath(path, () => node.data = modify(), binders);
-                requestAnimationFrame(() => {
-                    node.data = modify();
-                });
             });
         }
     }
-    requestAnimationFrame(() => {
+    Promise.resolve().then(() => {
         markedAttributesToRemove.forEach(attr => {
             if (attr.ownerElement)
               (<Element>attr.ownerElement).removeAttribute(attr.nodeName);
