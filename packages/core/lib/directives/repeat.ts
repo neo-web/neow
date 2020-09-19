@@ -1,19 +1,17 @@
 import { Directive, Registry } from '../directive';
 import { scanDOMTree } from '../dom';
 
-const $Value = Symbol();
-const $Index = Symbol();
+const $Value = Symbol(), $Index = Symbol(), $Exec = Symbol();
 
 const replicate = (n: number, text: string) => {
-  let temp = text
   let result = ''
   if (n < 1) return result
   while (n > 1) {
-    if (n & 1) result += temp
+    if (n & 1) result += text
     n >>= 1
-    temp += temp
+    text += text
   }
-  return result + temp
+  return result + text
 }
 
 const repeatDirective: Directive = {
@@ -24,7 +22,7 @@ const repeatDirective: Directive = {
     template.content.appendChild(targetNode.cloneNode(true));
     (template.content.firstChild as Element).removeAttribute('#repeat');
     (template.content.firstChild as Element).removeAttribute('#foreach');
-    const hook = document.createComment('-repeat-');
+    const hook = document.createComment('-r-');
     targetNode.parentNode!.insertBefore(hook, targetNode);
     targetNode.remove();
     const range = document.createRange();
@@ -42,6 +40,7 @@ const repeatDirective: Directive = {
         clones.length = value.length;
       }
 
+      // prepare new nodes
       if (lastValue.length < value.length) {
         const t = document.createElement('template');
         t.innerHTML = replicate(value.length - lastValue.length, template.innerHTML);
@@ -52,16 +51,16 @@ const repeatDirective: Directive = {
       }
 
       for (let i = 0; i < value.length; i++) {
-        // update existing
+        // update existing nodes
         const clone = clones[i];
         if (clone) {
           const updater = (<any>clone)['$_$'] as Function;
           if ((<any>clone)[$Value] !== value[i] && updater) {
             (<any>clone)[$Value] = value[i];
-            (<any>clone)['$_$']();
+            (<any>clone)[$Exec]();
           }
         } else {
-          // add missing
+          // bind new nodes
           const newClone = scratchPad!.children.item(i - lastValue.length) as HTMLElement;
           (<any>newClone)[$Value] = value[i];
           (<any>newClone)[$Index] = i;
@@ -73,11 +72,12 @@ const repeatDirective: Directive = {
             index: () => (<any>newClone)[$Index],
           }
           });
-          (<any>newClone)['$_$'] = () => update('value');
+          (<any>newClone)[$Exec] = () => update('value');
           update();
         }
       }
       if (scratchPad) {
+        // attach new nodes
         clones.push(...(Array.from(scratchPad.children)) as HTMLElement[])
           range.setStartAfter(hook);
           range.collapse();
@@ -87,10 +87,6 @@ const repeatDirective: Directive = {
       if (sideEffect) {
         sideEffect();
       }
-      // const frag = document.createDocumentFragment();
-      // if (lastValue.length < value.length) {
-      //   frag.append(...clones.slice(lastValue.length));
-      // }
     }
     handler.sideEffect = attribute.nodeName === '#repeat';
     return handler;

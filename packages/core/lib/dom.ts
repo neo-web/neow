@@ -1,5 +1,5 @@
 import {Directive, Registry} from './directive';
-import {parse} from './parse';
+import { parse } from './parse';
 
 const isPropogating = Symbol();
 
@@ -20,11 +20,7 @@ const propagate = (binders: Binders, sideEffects: Function[] = []) => (key?: str
     }
     (key && key !== '*' ? [key] : Object.keys(binders)).forEach(path => {
         (binders[path] || []).forEach((fn) => {
-            try {
-            return fn();
-            } catch (err) {
-            return '';
-            }
+            try {fn()} catch (err) {return ''};
         });
     });
     if (binders['*']) {

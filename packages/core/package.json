@@ -23,7 +23,7 @@
     "url": "git+https://github.com/neo-web/neow.git"
   },
   "size": {
-    "max": 2300
+    "max": 2450
   },
   "devDependencies": {
     "gzip-size-cli": "^3.0.0",
