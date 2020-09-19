@@ -54,7 +54,7 @@ const repeatDirective: Directive = {
         // update existing nodes
         const clone = clones[i];
         if (clone) {
-          const updater = (<any>clone)['$_$'] as Function;
+          const updater = (<any>clone)[$Exec] as Function;
           if ((<any>clone)[$Value] !== value[i] && updater) {
             (<any>clone)[$Value] = value[i];
             (<any>clone)[$Exec]();

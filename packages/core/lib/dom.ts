@@ -20,7 +20,7 @@ const propagate = (binders: Binders, sideEffects: Function[] = []) => (key?: str
     }
     (key && key !== '*' ? [key] : Object.keys(binders)).forEach(path => {
         (binders[path] || []).forEach((fn) => {
-            try {fn()} catch (err) {return ''};
+            try { fn() } catch (err) {}
         });
     });
     if (binders['*']) {
