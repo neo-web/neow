@@ -17,7 +17,9 @@
     "rollup-plugin-typescript2": "^0.25.3",
     "typescript": "^3.7.5"
   },
-  "dependencies": {},
+  "dependencies": {
+    "cross-env": "^7.0.2"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/neo-web/neow.git"
