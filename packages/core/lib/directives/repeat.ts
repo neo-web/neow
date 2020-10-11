@@ -24,7 +24,7 @@ const repeatDirective: Directive = {
     (template.content.firstChild as Element).removeAttribute('#foreach');
     const hook = document.createComment('-r-');
     targetNode.parentNode!.insertBefore(hook, targetNode);
-    targetNode.remove();
+    Promise.resolve().then(() => targetNode.remove());
     const range = document.createRange();
     const clones: HTMLElement[] = [];
     let lastValue: any[] = [];
