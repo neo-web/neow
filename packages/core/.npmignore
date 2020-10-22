@@ -1,3 +1,7 @@
 docs
 rollup.config.js
 tsconfig.json
+test
+test-size.js
+web-test-runner.config.msj
+coverage
