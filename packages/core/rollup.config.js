@@ -28,6 +28,7 @@ export default {
     output: [{
         file: pkg.module,
         format: 'es',
+        sourcemap: true,
     }],
     ...common
 };

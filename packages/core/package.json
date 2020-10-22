@@ -23,16 +23,20 @@
     "url": "git+https://github.com/neo-web/neow.git"
   },
   "size": {
-    "max": 2450
+    "max": 2650
   },
   "devDependencies": {
     "gzip-size-cli": "^3.0.0",
-    "rollup": "2.3.4"
+    "rollup": "2.3.4",
+    "@web/test-runner": "^0.7.41",
+    "@open-wc/testing": "^2.0.0"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
     "build": "rm -rf ./dist || echo '' && NODE_ENV=production rollup -c && node ./test-size.js",
-    "dev": "NODE_ENV=development rollup -c --watch"
+    "dev": "NODE_ENV=development rollup -c --watch",
+    "test": "web-test-runner --coverage",
+    "test:watch": "web-test-runner --watch"
   },
   "bugs": {
     "url": "https://github.com/neo-web/neow/issues"

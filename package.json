@@ -4,8 +4,10 @@
   "description": "Modern web standards based UI authoring tools and libraries",
   "main": "index.js",
   "scripts": {
+    "bootstrap": "lerna bootstrap",
     "dev": "lerna run dev --parallel --stream",
-    "build": "lerna run build"
+    "build": "lerna run build",
+    "test": "lerna run test"
   },
   "author": "eavichay@gmail.com",
   "license": "GPL-3.0",
