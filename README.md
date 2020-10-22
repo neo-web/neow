@@ -1,7 +1,7 @@
 # neow
 Fast and Super-slim front-end microframework.
 
-![](https://badgen.net/bundlephobia/minzip/@neow/core?icon=npm)
+![](https://badgen.net/bundlephobia/minzip/@neow/core?icon=npm) ![CI](https://github.com/neo-web/neow/workflows/CI/badge.svg)
 
 ## Features:
 - Components (Web-Components based) - declarative markup + directives
