@@ -1,6 +1,15 @@
-import {Component, Injector} from '../../packages/core/dist/index.js'
+import {Registry, Component, Injector} from '../../packages/core/dist/index.js'
 import {RouterOutlet} from '../../packages/components/dist/router.js';
 import {StyleLoader} from '../../packages/components/dist/styleloader.js';
+import dIf from '../../packages/core/dist/if.js';
+import dRep from '../../packages/core/dist/repeat.js';
+import dProp from '../../packages/core/dist/property.js';
+import dRef from '../../packages/core/dist/ref.js';
+
+dIf(Registry);
+dRep(Registry);
+dProp(Registry);
+dRef(Registry);
 
 class RandomUserService {
     async getUser(userId) {

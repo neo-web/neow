@@ -10,6 +10,8 @@ async function main() {
   if (fileSize > pkg.size.max) {
     console.error(`Dist file too large: Max allowed ${pkg.size.max}, actual ${fileSize}`)
     process.exit(1);
+  } else {
+    console.info('Dist file size (OK): ', fileSize, '        (max allowed ' + pkg.size.max + ')');
   }
 }
 

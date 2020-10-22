@@ -5,7 +5,6 @@ import { scanDOMTree } from '../dom';
 const internals = Symbol('n-cmx');
 
 export const updateElement = (target: HTMLElement | Element) => {
-    console.log('updating', target);
     (<any>target)[internals]!.update('*');
 };
 
@@ -14,6 +13,8 @@ export function ComponentMixin<TBase extends CustomElement<HTMLElement> = Custom
     return class ComponentMixinClass extends BaseClass {
         [internals]: Record<string, any>;
         public static template = '';
+        public static ['internal.scanDOM'] = scanDOMTree;
+        public static ['internal.updateElement'] = updateElement;
         constructor() {
             super();
             this[internals] = {};

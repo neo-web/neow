@@ -1,5 +1,4 @@
-import {Directive, Registry} from '../directive';
-import {updateElement} from '../mixins/ComponentMixin';
+import type {Directive, IDirectiveRegistry} from '../directive';
 
 const refDirective: Directive = {
     attribute: (attr) => attr.nodeName === '#ref',
@@ -12,8 +11,10 @@ const refDirective: Directive = {
                 [key]: targetNode
             }
         }
-        updateElement(componentNode);
+        (<any>componentNode).constructor['internal.updateElement'](componentNode);
     }
 }
 
-Registry.register(refDirective);
+export default function register(registry: IDirectiveRegistry) {
+    registry.register(refDirective);
+}

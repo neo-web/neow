@@ -1,5 +1,4 @@
-import { Directive, Registry } from '../directive';
-import { scanDOMTree } from '../dom';
+import type { Directive, IDirectiveRegistry } from '../directive';
 
 const $Value = Symbol(), $Index = Symbol(), $Exec = Symbol();
 
@@ -17,6 +16,7 @@ const replicate = (n: number, text: string) => {
 const repeatDirective: Directive = {
   attribute: (attr) => attr.nodeName === '#repeat' || attr.nodeName === `#foreach`,
   process: ({ targetNode, componentNode, attribute }) => {
+    const scanDOMTree = (<any>componentNode).constructor['internal.scanDOM'];
     Promise.resolve().then(() => (targetNode.removeAttribute('#repeat'), targetNode.removeAttribute('#foreach')));
     const template = document.createElement('template') as HTMLTemplateElement;
     template.content.appendChild(targetNode.cloneNode(true));
@@ -93,4 +93,6 @@ const repeatDirective: Directive = {
   }
 }
 
-Registry.register(repeatDirective);
+export default function register(registry: IDirectiveRegistry) {
+  registry.register(repeatDirective);
+}

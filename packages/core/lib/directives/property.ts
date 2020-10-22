@@ -1,4 +1,4 @@
-import {Directive, Registry} from '../directive';
+import type {Directive, IDirectiveRegistry} from '../directive';
 
 const propertyDirective: Directive = {
     attribute: (attr) => attr.nodeName.startsWith('[') && attr.nodeName.endsWith(']'),
@@ -11,4 +11,6 @@ const propertyDirective: Directive = {
     }
 }
 
-Registry.register(propertyDirective);
+export default function register(registry: IDirectiveRegistry) {
+    registry.register(propertyDirective);
+}

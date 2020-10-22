@@ -14,7 +14,12 @@ export interface Directive<T = any> {
     registerAsGlobal?: (register: DirectiveRegister|undefined) => void;
 }
 
-class DirectiveRegistry {
+export interface IDirectiveRegistry {
+    register(directive: Directive): void;
+    getDirectives(): Directive[];
+}
+
+class DirectiveRegistry implements IDirectiveRegistry {
     private directives: Set<Directive> = new Set();
     public register(directive: Directive) {
         this.directives.add(directive);
